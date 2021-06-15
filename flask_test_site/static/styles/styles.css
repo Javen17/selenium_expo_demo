@@ -1,0 +1,14 @@
+:root {
+    --darkRed: #8b0000;
+    --white: #ffffff;
+}
+
+.dark-red-header{
+   background-color: var(--darkRed);
+   color: var(--white);
+   font-weight: bold;
+}
+
+.carousel-img{
+    object-fit: cover;
+}
