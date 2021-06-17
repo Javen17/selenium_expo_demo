@@ -1,6 +1,5 @@
 from models.models import Game
 
-
 class MockDb: 
    def __init__(self):
        self.db = {

@@ -1,26 +1,29 @@
+from os import system
+from flask_test_site.models.mock_db import MockDb
 from selenium_example.taskmaster.taskmaster import TaskMaster
 import unittest
-from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-import pathlib as pl
 
 class TestSelenium(unittest.TestCase):
+    taskmaster = TaskMaster()
 
     def setUp(self):
-        self.taskmaster = TaskMaster()
+        self.taskmaster.get_site_page('http://127.0.0.1:5000/')
 
-    def assertIsFile(self, path):
-        if not pl.Path(path).resolve().is_file():
-            raise AssertionError("File does not exist: %s" % str(path))
+    def test_main_page_exist(self):
+        self.assertIn('http://127.0.0.1:5000/', self.taskmaster.driver_handler.driver.current_url)
+    
+    def test_carousel_movement(self):
+        results = self.taskmaster.move_carousel()
+        self.assertNotEqual(results.initial_active_position, results.last_active_position)
 
-    #def test_search_google(self):
-    #    self.taskmaster.search_bing('flutter')
-    #    self.assertIn('https://www.google.com/search?q=flutter', self.taskmaster.driver_handler.driver.current_url ) 
+    def test_carousel_elements(self):
+       #here we simulate database access, with this we can assert the query results get painted on the page
+       db =  MockDb().db
+       self.assertEqual(len(db["games"]), self.taskmaster.get_carousel_len())
 
-    def test_big_yoshi_file(self):
-        self.taskmaster.get_big_yoshi()
-        self.assertIsFile('C:\\Users\\javie\\Desktop\\experiments\\Selenium\\big_yoshi.jpeg')
+    def test_detail_link(self): 
+        self.taskmaster.click_detail_link()
+        self.assertIn('http://127.0.0.1:5000/detail/0', self.taskmaster.driver_handler.driver.current_url)
 
-    def tearDown(self):
-        self.taskmaster.driver_handler.close_driver_instance()
 

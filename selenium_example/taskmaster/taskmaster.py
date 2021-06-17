@@ -1,5 +1,5 @@
+from selenium_example.taskmaster.models import MoveCarouselResult
 from selenium.webdriver.common.keys import Keys
-import urllib.request
 from selenium_example.webdriver.webdriver import WebDriverHandler
 from selenium import webdriver 
 import time 
@@ -7,38 +7,41 @@ import time
 class TaskMaster:
     driver_handler = WebDriverHandler()
 
-    def search_bing(self, query):
-        self.driver_handler.create_driver_instance()
-        self.driver_handler.driver.get(f'https://www.bing.com/search?q={query}')
-
+    def get_site_page(self, query):
+        self.driver_handler.driver.get(query)
     
-    def get_big_yoshi(self):
-        self.search_bing('big+yoshi')
-        google_options_row  = self.driver_handler.driver.find_element_by_xpath('//*[@id="b-scopeListItem-images"]/a')
-       #image_link =  google_options_row.find_element_by_xpath('//*[@id="b-scopeListItem-images"]/a')
-        google_options_row.click()
+    def get_carousel_len(self):
+        time.sleep(10)
+        carousel_items = self.driver_handler.driver.find_elements_by_class_name('carousel-item')
+        return len(carousel_items)
 
+    def move_carousel(self):
+        results = MoveCarouselResult()
+
+        carousel_items = self.driver_handler.driver.find_elements_by_class_name('carousel-item')
+        results.initial_active_position = self.get_carousel_active_index(carousel_items)
+        next_arrow = self.driver_handler.driver.find_element_by_xpath('//*[@id="carouselExampleControls"]/a[2]/span[1]')
+        next_arrow.click()
         time.sleep(5)
+        results.last_active_position = self.get_carousel_active_index(carousel_items)
 
-        img =  self.driver_handler.driver.find_element_by_xpath('//*[@id="mmComponent_images_2"]/ul[1]/li[1]/div/div[1]/a/div')
-        img.click()
-       
-        action = webdriver.ActionChains(self.driver_handler.driver)
-       
-        action.move_to_element(img)
-        action.perform()
-        time.sleep(5)
+        return results
 
-        #img = self.driver_handler.driver.find_element_by_xpath('//*[@id="mainImageWindow"]/div[1]/div/div/div/img')
+    def get_carousel_active_index(self, carousel_items):
 
-        #src = img.get_attribute('src')
-        #urllib.request.urlretrieve(src, "big_yoshi.jpeg")
+        position = 0
 
-    def simulate_user_input(self, query):
-        search_bar = self.driver_handler.driver.find_element_by_name("q")
-        search_bar.clear()
-        search_bar.send_keys(query)
-        search_bar.send_keys(Keys.RETURN)
+        for item in carousel_items:
+            class_list = item.get_attribute('class')
+            for class_name in class_list.split(' '):
+                if class_name == 'active':
+                    return position
+            position += 1
         
-      
-
+        return None
+    
+    def click_detail_link(self):
+        game_link = self.driver_handler.driver.find_element_by_xpath('/html/body/div[2]/div[2]/div[2]/div[1]/a')
+        game_link.click()
+        time.sleep(5)
+        
