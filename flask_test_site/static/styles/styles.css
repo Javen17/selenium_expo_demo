@@ -9,6 +9,45 @@
    font-weight: bold;
 }
 
+.dark-red-background{
+    background-color: var(--darkRed);
+    color: var(--white);
+}
+
+.game-detail-text-container{
+    display: flex;
+    align-items: center;
+}
+
+.img-container img{
+    width: 100%;
+    object-fit: cover;
+}
+
+.img-container:hover{
+    transform: scale(1.1);
+    animation: ease-out 2s;
+}
+
 .carousel-img{
     object-fit: cover;
+    object-position: top;
+}
+
+.circle-container{
+    display: flex;
+    justify-content: center;
+}
+
+.circle-container img{
+    border-radius: 25px;
+    width: 50%;
+    border: 2px solid var(--darkRed);
+    height: 170px;
+    object-fit: cover;
+}
+
+.circle-container img:hover{
+    transform: scale(1.2);
+    animation: ease-out 2s;
 }

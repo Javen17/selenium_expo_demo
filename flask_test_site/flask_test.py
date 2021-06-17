@@ -10,8 +10,8 @@ def index():
     db_games = MockDb().db
     return render_template('main.html', games = db_games)
 
-@app.route('/page/<game_id>')
+@app.route('/detail/<game_id>')
 def detail(game_id):
-    return render_template('main.html', context= MockDb().db["games"][game_id])
+    return render_template('detail.html', context= MockDb().db["games"][int(game_id)])
 
 app.run()
